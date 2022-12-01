@@ -2,6 +2,7 @@ import argparse
 import os
 import time
 import regex as re
+import shutil
 
 if __name__ == "__main__":
     # Create the parser
@@ -23,8 +24,18 @@ if __name__ == "__main__":
     for subset in ['train', 'valid', 'test']:
         os.makedirs(os.path.join(output_dir, subset))
 
-    # Find every file in the data/Real directory that has a filename containing "Left_index_finger.BMP"
+    # Move (size)__(M|F)_Left_index_finger.BMP files from the data directory to the output directory
     for i in range(args.size):
+        # Create a regex to match the file names
+        regex = re.compile(r'{}__(M|F)_Left_index_finger.BMP'.format(i))
+
+        # Find the files that match the regex
+        for root, dirs, files in os.walk(args.data):
+            for file in files:
+                if regex.match(file):
+                    # Move the file to the output directory
+                    shutil.copy(os.path.join(root, file), os.path.join(output_dir, 'test'))
+        
         
     
     
