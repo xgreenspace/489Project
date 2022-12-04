@@ -48,13 +48,23 @@ if __name__ == "__main__":
 
         # Find the files that match the regex
         files_found = 0
-        for root, dirs, files in os.walk(args.data + '/Altered/Altered-Easy'):
+        for root, dirs, files in os.walk(args.data + '/Altered'):
             for file in files:
                 if regex.match(file):
                     # create directory for output
-                    os.mkdir(os.path.join(output_dir, 'train', 'class_{}'.format(i)))
+                    try:
+                        os.mkdir(os.path.join(output_dir, 'train', 'class_{}'.format(i)))
+                    except FileExistsError:
+                        pass
+
                     # Move the file to the output directory
                     shutil.copy(os.path.join(root, file), os.path.join(output_dir, 'train', 'class_{}'.format(i)))
+                    if "Medium" in root:
+                        # Add an _M to the file name
+                        os.rename(os.path.join(output_dir, 'train', 'class_{}'.format(i), file), os.path.join(output_dir, 'train', 'class_{}'.format(i), file[:-4] + "_M.BMP"))
+                    if "Hard" in root:
+                        # Add an _H to the file name
+                        os.rename(os.path.join(output_dir, 'train', 'class_{}'.format(i), file), os.path.join(output_dir, 'train', 'class_{}'.format(i), file[:-4] + "_H.BMP"))
                     files_found += 1
                     if files_found == 6:
                         break
@@ -66,13 +76,22 @@ if __name__ == "__main__":
 
         # Find the files that match the regex
         files_found = 0
-        for root, dirs, files in os.walk(args.data  + '/Altered/Altered-Medium'):
+        for root, dirs, files in os.walk(args.data):
             for file in files:
                 if regex.match(file):
                     # create directory for output
-                    os.mkdir(os.path.join(output_dir, 'valid', 'class_{}'.format(i)))
-                    # Move the file to the output directory
+                    try:
+                        os.mkdir(os.path.join(output_dir, 'valid', 'class_{}'.format(i)))
+                    except FileExistsError:
+                        pass
+                    # Copy the file to the output directory and rename it
                     shutil.copy(os.path.join(root, file), os.path.join(output_dir, 'valid', 'class_{}'.format(i)))
+                    if "Medium" in root:
+                        # Add an _M to the file name
+                        os.rename(os.path.join(output_dir, 'valid', 'class_{}'.format(i), file), os.path.join(output_dir, 'valid', 'class_{}'.format(i), file[:-4] + "_M.BMP"))
+                    if "Hard" in root:
+                        # Add an _H to the file name
+                        os.rename(os.path.join(output_dir, 'valid', 'class_{}'.format(i), file), os.path.join(output_dir, 'valid', 'class_{}'.format(i), file[:-4] + "_H.BMP"))
                     files_found += 1
                     if files_found == 3:
                         break
