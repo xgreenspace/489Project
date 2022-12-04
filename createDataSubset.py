@@ -25,16 +25,61 @@ if __name__ == "__main__":
         os.makedirs(os.path.join(output_dir, subset))
 
     # Move (size)__(M|F)_Left_index_finger.BMP files from the data directory to the output directory
-    for i in range(args.size):
+    for i in range(args.size + 1):
         # Create a regex to match the file names
         regex = re.compile(r'{}__(M|F)_Left_index_finger.BMP'.format(i))
 
         # Find the files that match the regex
+        file_found = False
         for root, dirs, files in os.walk(args.data):
             for file in files:
                 if regex.match(file):
+                    # create directory for output
+                    os.mkdir(os.path.join(output_dir, 'test', 'class_{}'.format(i)))
                     # Move the file to the output directory
-                    shutil.copy(os.path.join(root, file), os.path.join(output_dir, 'test'))
+                    shutil.copy(os.path.join(root, file), os.path.join(output_dir, 'test', 'class_{}'.format(i)))
+                    file_found = True
+                    break
+            if file_found:
+                break
+
+    for i in range(args.size + 1):
+        regex = re.compile(r'{}__(M|F)_Left_index_finger_(CR|CRh|Obl|Oblh|Zcut|Zcuth).BMP'.format(i))
+
+        # Find the files that match the regex
+        files_found = 0
+        for root, dirs, files in os.walk(args.data + '/Altered/Altered-Easy'):
+            for file in files:
+                if regex.match(file):
+                    # create directory for output
+                    os.mkdir(os.path.join(output_dir, 'train', 'class_{}'.format(i)))
+                    # Move the file to the output directory
+                    shutil.copy(os.path.join(root, file), os.path.join(output_dir, 'train', 'class_{}'.format(i)))
+                    files_found += 1
+                    if files_found == 6:
+                        break
+            if files_found == 6:
+                break
+
+    for i in range(args.size + 1):
+        regex = re.compile(r'{}__(M|F)_Left_index_finger_(CR|Obl|Zcut).BMP'.format(i))
+
+        # Find the files that match the regex
+        files_found = 0
+        for root, dirs, files in os.walk(args.data  + '/Altered/Altered-Medium'):
+            for file in files:
+                if regex.match(file):
+                    # create directory for output
+                    os.mkdir(os.path.join(output_dir, 'valid', 'class_{}'.format(i)))
+                    # Move the file to the output directory
+                    shutil.copy(os.path.join(root, file), os.path.join(output_dir, 'valid', 'class_{}'.format(i)))
+                    files_found += 1
+                    if files_found == 3:
+                        break
+            if files_found == 3:
+                break
+
+                
         
         
     
